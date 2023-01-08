@@ -22,6 +22,7 @@ fn main() {
 
     for p in &pieces[..] {
         println!("{:?}", p);
+        p::draw(&p)
     }
 }
 

@@ -1,3 +1,5 @@
+use std::{usize};
+
 #[derive(Debug, Clone)]
 pub struct Piece {
     pub id : u8,
@@ -62,7 +64,7 @@ pub fn  rotate(piece: &Piece) -> Piece{
 pub fn flip(piece: &Piece) -> Piece{
     let mut flipped : Piece = Piece{id: piece.id, shape : Vec::new() , orientation : piece.orientation, direction : piece.direction * -1} ;
     let mut max_x = 0;
-    for p in piece.shape.as_slice() {
+    for p in &piece.shape[..] {
         if p[0] > max_x {
             max_x = p[0];
         }
@@ -73,6 +75,38 @@ pub fn flip(piece: &Piece) -> Piece{
     }
 
     return flipped;
+}
+
+pub fn draw(piece : &Piece) {
+    let mut max_x = 0;
+    let mut max_y = 0;
+    for p in &piece.shape[..] {
+        if p[0] > max_x {
+            max_x = p[0];
+        }
+        if p[1] > max_y {
+            max_y = p[1];
+        }
+    }
+
+    let mut row: i8 = 0;
+
+    while row <= max_y {
+        let mut line = String::from("             ");
+        for p in &piece.shape[..] {
+            if p[1] == row {
+                let upos:u8 = u8::try_from(p[0]).unwrap();
+                let pos:usize = usize::from(upos);
+                
+                line.replace_range(pos..pos+1, "X");
+            }
+        }
+        println!("{}", line);
+        row+=1;
+
+    }
+
+
 }
 
 #[test]
