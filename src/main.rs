@@ -1,14 +1,17 @@
 use std::vec;
 
+#[path="piece.rs"]
+mod p;
+
 fn main() {
     
     let mut board : Vec<Tile> = Vec::new();
-    let mut pieces : Vec<Piece> = Vec::new();
+    let mut pieces : Vec<p::Piece> = Vec::new();
  
     create(&mut board);
     draw(&board);
 
-    pieces.push(Piece {id : 0, shape : vec![[0,0], [0,1], [1,1], [1,2] ], orientation : 0, direction : 0 }); 
+    pieces.push(p::Piece {id : 0, shape : vec![[0,0], [0,1], [1,1], [1,2] ], orientation : 0, direction : 1 }); 
     println!("{:?}", pieces);
 }
 
@@ -105,10 +108,3 @@ struct Tile {
     txt : String
 }
 
-#[derive(Debug, Clone)]
-struct Piece {
-    id : u8,
-    shape : Vec<[u8;2]>,
-    orientation : u8,
-    direction : u8
-}
