@@ -2,9 +2,9 @@ use std::{usize};
 
 #[derive(Debug, Clone)]
 pub struct Piece {
-    pub id : u8,
+    pub id : i8,
     pub shape : Vec<[i8;2]>,
-    pub orientation : u8,
+    pub orientation : i8,
     pub direction : i8
 }
 
@@ -93,12 +93,13 @@ pub fn draw(piece : &Piece) {
 
     while row <= max_y {
         let mut line = String::from("             ");
+        let piece_char  = &piece.id.to_string()[..];
         for p in &piece.shape[..] {
             if p[1] == row {
                 let upos:u8 = u8::try_from(p[0]).unwrap();
                 let pos:usize = usize::from(upos);
                 
-                line.replace_range(pos..pos+1, "X");
+                line.replace_range(pos..pos+1, piece_char);
             }
         }
         println!("{}", line);

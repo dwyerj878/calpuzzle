@@ -24,12 +24,86 @@ fn main() {
         println!("{:?}", p);
         p::draw(&p)
     }
+
+    
+    play(&board, &pieces);
+
+
+
+}
+
+fn play(board: &Vec<Tile>, pieces: &Vec<p::Piece>) -> bool {
+    let mut games :Vec<&Game> = vec![];
+    let mut game : Game = Game{board : board.clone(), pieces : vec![]};
+    games.push(&game);
+    // let's start
+    // outer loop starts with each piece
+    for p in pieces {
+        // rotation loop
+        for r in 0 ..=3 {
+            let rotated = p::rotate(p);
+            // flip loop
+            for d in 0 .. 2 {
+                let flipped = p::flip(&rotated);
+                for i in 0 .. game.board.len() {
+                    let t = &game.board[i];
+                    if t.used == 0 {
+                        if ! can_place(&game.board, &t, &flipped) {
+                            continue
+                        }
+
+                        // place
+                        for c in &flipped.shape[..] {
+                            for ii in 0 .. game.board.len() {
+                                let tt = &game.board[ii];
+                                if tt.x == t.x + c[0] && tt.y == t.y + c[1] && tt.used != 0 {
+                                    game.board[ii].used(p.id);
+                                }            
+                            }
+                        }
+                        
+                    }
+                }
+            }
+        }
+    }
+    return false
+}
+
+fn can_place(board : &Vec<Tile>, t: &Tile, p: &p::Piece) -> bool {
+    // in bounds
+    for c in &p.shape[..] {
+        let mut found = false;
+        for tt in &board[..] {
+            if tt.x == t.x + c[0] && tt.y == t.y + c[1] {
+                found = true;
+                break
+            }                    
+        }
+        if !found {
+            return false;
+        }
+    }
+    
+    // check collision
+    for c in &p.shape[..] {
+        for tt in &board[..] {
+            if tt.x == t.x + c[0] && tt.y == t.y + c[1] && tt.used != 0 {
+                return false
+            }            
+        }
+    }
+
+    return true;
 }
 
 
+    
+
+
 fn draw(board: &Vec<Tile> ) {
-    let mut max_x: u8 = 0;
-    let mut max_y: u8 = 0;
+    let mut max_x: i8 = 0;
+    let mut max_y: i8 = 0;
     for tile in board {
         if tile.x > max_x {
             max_x = tile.x;
@@ -113,9 +187,21 @@ fn create(board: &mut Vec<Tile> ) {
 
 #[derive(Debug, Clone)]
 struct Tile { 
-    x : u8,
-    y : u8,
-    used : u8,
+    x : i8,
+    y : i8,
+    used : i8,
     txt : String
+
+  
 }
 
+impl Tile {
+    fn used(&mut self, p: i8) {
+        self.used = p;
+    }
+}
+
+struct Game {
+    board : Vec<Tile>,
+    pieces : Vec<p::Piece>
+}
