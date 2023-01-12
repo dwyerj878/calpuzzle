@@ -26,13 +26,13 @@ fn main() {
     }
 
     
-    play(&board, &pieces);
+    play(board, pieces);
 
 
 
 }
 
-fn play(board: &Vec<Tile>, pieces: &Vec<p::Piece>) -> bool {
+fn play(board: Vec<Tile>, pieces: Vec<p::Piece>) -> bool {
     let mut games :Vec<&Game> = vec![];
     let mut game : Game = Game{board : board.clone(), pieces : vec![]};
     games.push(&game);
@@ -41,29 +41,30 @@ fn play(board: &Vec<Tile>, pieces: &Vec<p::Piece>) -> bool {
     for p in pieces {
         // rotation loop
         for r in 0 ..=3 {
-            let rotated = p::rotate(p);
+            let rotated = p::rotate(&p);
             // flip loop
             for d in 0 .. 2 {
                 let flipped = p::flip(&rotated);
                 for i in 0 .. game.board.len() {
-                    let t = &game.board[i];
-                    if t.used == 0 {
-                        if ! can_place(&game.board, &t, &flipped) {
-                            continue
-                        }
 
-                        // place
-                        for c in &flipped.shape[..] {
-                            for ii in 0 .. game.board.len() {
-                                let tt = &game.board[ii];
-                                if tt.x == t.x + c[0] && tt.y == t.y + c[1] && tt.used != 0 {
-                                    game.board[ii].used(p.id);
-                                }            
-                            }
-                        }
-                        
+                    if game.board[i].used != 0 {
+                        continue;
                     }
+                    if ! can_place(&game.board, &game.board[i], &flipped) {
+                        continue
+                    }
+
+                    // place
+                    for c in &flipped.shape[..] {
+                        for ii in 0 .. game.board.len() {                            
+                            if game.board[ii].x == game.board[i].x + c[0] && game.board[ii].y == game.board[i].y + c[1] && game.board[ii].used != 0 {
+                                game.board[ii].used(p.id);
+                            }            
+                        }
+                    }
+                    
                 }
+            
             }
         }
     }
@@ -199,6 +200,7 @@ impl Tile {
     fn used(&mut self, p: i8) {
         self.used = p;
     }
+
 }
 
 struct Game {
