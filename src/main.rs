@@ -38,7 +38,7 @@ fn play(board: Vec<Tile>, pieces: Vec<p::Piece>) -> bool {
     games.push(&game);
     // let's start
     // outer loop starts with each piece
-    for p in pieces {
+    'pLoop: for p in pieces {
         // rotation loop
         for r in 0 ..=3 {
             let rotated = p::rotate(&p);
@@ -55,14 +55,21 @@ fn play(board: Vec<Tile>, pieces: Vec<p::Piece>) -> bool {
                     }
 
                     // place
+                    println!("placing {} @ {},{}", flipped.id, game.board[i].x, game.board[i].y );
                     for c in &flipped.shape[..] {
-                        for ii in 0 .. game.board.len() {                            
-                            if game.board[ii].x == game.board[i].x + c[0] && game.board[ii].y == game.board[i].y + c[1] && game.board[ii].used != 0 {
+                        //println!("shape {} @ {},{}", flipped.id, c[0], c[1] );
+                        for ii in 0 .. game.board.len() {          
+                            //println!("checking {} @ {},{}", flipped.id, game.board[ii].x, game.board[ii].y ); 
+                            //println!("against  {} @ {},{}", flipped.id, game.board[i].x + c[0], game.board[i].y+c[1] );                 
+                            if game.board[ii].x == game.board[i].x + c[0] && game.board[ii].y == game.board[i].y + c[1] && game.board[ii].used == 0 {
+                                //println!("using {} @ {},{}", flipped.id, game.board[ii].x, game.board[ii].y );
                                 game.board[ii].used(p.id);
                             }            
                         }
                     }
-                    
+                    draw(&game.board);
+                    continue 'pLoop;
+
                 }
             
             }
@@ -120,7 +127,11 @@ fn draw(board: &Vec<Tile> ) {
             let mut matched:bool = false;
             for tile in board {                
                 if tile.x == x && tile.y == y {
-                    print!("|{:5}", tile.txt);
+                    if tile.used == 0 {
+                        print!("|{:5}", tile.txt);
+                    } else {
+                        print!("|{:5}", tile.used);
+                    }
                     matched = true;
                     break;
                 }                
@@ -198,6 +209,7 @@ struct Tile {
 
 impl Tile {
     fn used(&mut self, p: i8) {
+        println!("Tile.used {}:{} {},{}", self.txt, self.used, self.x, self.y);
         self.used = p;
     }
 
