@@ -26,7 +26,6 @@ fn main() {
         p::draw(&p)
     }
 
-    
     play(board, pieces);
 
 
@@ -129,10 +128,12 @@ fn draw(board: &Vec<Tile> ) {
             for tile in board {                
                 if tile.x == x && tile.y == y {
                     if tile.used == 0 {
-                        print!("|{:5}", tile.txt);
+                        print!("|{:^5}", tile.txt.bright_green().on_green());
+                    } else if tile.used == -1 {
+                        print!("|{:^5}", tile.txt.blue().on_red());                    
                     } else {
-                        let utxt:String = format!("{:5}", tile.used);
-                        print!("|{:5}", utxt.red().bold());
+                        let utxt:String = format!("{:^5}", tile.used);
+                        print!("|{:^5}", utxt.red().bold().on_white());
                     }
                     matched = true;
                     break;
@@ -149,7 +150,7 @@ fn draw(board: &Vec<Tile> ) {
 
 fn create(board: &mut Vec<Tile> ) {
     board.push(Tile {x:0, y:0, used:0, txt:String::from("Jan")});
-    board.push(Tile {x:1, y:0, used:0, txt:String::from("Feb")});
+    board.push(Tile {x:1, y:0, used:-1, txt:String::from("Feb")});
     board.push(Tile {x:2, y:0, used:0, txt:String::from("Mar")});
     board.push(Tile {x:3, y:0, used:0, txt:String::from("Apr")});
     board.push(Tile {x:4, y:0, used:0, txt:String::from("May")});
@@ -167,7 +168,7 @@ fn create(board: &mut Vec<Tile> ) {
     board.push(Tile {x:2, y:2, used:0, txt:String::from("3")});
     board.push(Tile {x:3, y:2, used:0, txt:String::from("4")});
     board.push(Tile {x:4, y:2, used:0, txt:String::from("5")});
-    board.push(Tile {x:5, y:2, used:0, txt:String::from("6")});
+    board.push(Tile {x:5, y:2, used:-1, txt:String::from("6")});
     board.push(Tile {x:6, y:2, used:0, txt:String::from("7")});
 
     board.push(Tile {x:0, y:3, used:0, txt:String::from("8")});
