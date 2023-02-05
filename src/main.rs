@@ -1,4 +1,5 @@
 use std::vec;
+use colored::Colorize;
 
 #[path="piece.rs"]
 mod p;
@@ -130,7 +131,8 @@ fn draw(board: &Vec<Tile> ) {
                     if tile.used == 0 {
                         print!("|{:5}", tile.txt);
                     } else {
-                        print!("|{:5}", tile.used);
+                        let utxt:String = format!("{:5}", tile.used);
+                        print!("|{:5}", utxt.red().bold());
                     }
                     matched = true;
                     break;
