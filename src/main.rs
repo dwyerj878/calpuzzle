@@ -1,54 +1,52 @@
 use std::vec;
 use colored::Colorize;
 
-#[path="piece.rs"]
-mod p;
+mod piece;
+mod game;
+mod tile;
 
-#[path="game.rs"]
-mod g;
-
-#[path="tile.rs"]
-mod t;
-
+use crate::tile::Tile;
+use crate::game::Game;
+use crate::piece::Piece;
 
 fn main() {
     
-    let mut board : Vec<t::Tile> = Vec::new();
-    let mut pieces : Vec<p::Piece> = Vec::new();
+    let mut board : Vec<Tile> = Vec::new();
+    let mut pieces : Vec<Piece> = Vec::new();
  
     create(&mut board);
     draw(&board);
 
-    pieces.push(p::Piece {id : 0, shape : vec![[0,0], [0,1], [0,2], [0,3], [1,1] ], orientation : 0, direction : 1 }); 
-    pieces.push(p::Piece {id : 1, shape : vec![[0,0], [0,1], [1,0], [2,0], [2,1] ], orientation : 0, direction : 1 });     
-    pieces.push(p::Piece {id : 2, shape : vec![[0,0], [0,1], [1,1], [2,1], [2,2] ], orientation : 0, direction : 1 }); 
-    pieces.push(p::Piece {id : 3, shape : vec![[1,0], [1,1], [1,2], [0,2], [0,3] ], orientation : 0, direction : 1 }); 
-    pieces.push(p::Piece {id : 4, shape : vec![[1,0], [0,1], [1,1], [2,0], [2,1] ], orientation : 0, direction : 1 }); 
-    pieces.push(p::Piece {id : 5, shape : vec![[0,2], [1,2], [2,2], [2,1], [2,0] ], orientation : 0, direction : 1 }); 
-    pieces.push(p::Piece {id : 6, shape : vec![[0,0], [1,0], [0,1], [1,1], [0,2], [1,2] ], orientation : 0, direction : 1 }); 
-    pieces.push(p::Piece {id : 7, shape : vec![[0,0], [0,1], [0,2], [0,3], [1,3] ], orientation : 0, direction : 1 }); 
+    pieces.push(Piece {id : 0, shape : vec![[0,0], [0,1], [0,2], [0,3], [1,1] ], orientation : 0, direction : 1 }); 
+    pieces.push(Piece {id : 1, shape : vec![[0,0], [0,1], [1,0], [2,0], [2,1] ], orientation : 0, direction : 1 });     
+    pieces.push(Piece {id : 2, shape : vec![[0,0], [0,1], [1,1], [2,1], [2,2] ], orientation : 0, direction : 1 }); 
+    pieces.push(Piece {id : 3, shape : vec![[1,0], [1,1], [1,2], [0,2], [0,3] ], orientation : 0, direction : 1 }); 
+    pieces.push(Piece {id : 4, shape : vec![[1,0], [0,1], [1,1], [2,0], [2,1] ], orientation : 0, direction : 1 }); 
+    pieces.push(Piece {id : 5, shape : vec![[0,2], [1,2], [2,2], [2,1], [2,0] ], orientation : 0, direction : 1 }); 
+    pieces.push(Piece {id : 6, shape : vec![[0,0], [1,0], [0,1], [1,1], [0,2], [1,2] ], orientation : 0, direction : 1 }); 
+    pieces.push(Piece {id : 7, shape : vec![[0,0], [0,1], [0,2], [0,3], [1,3] ], orientation : 0, direction : 1 }); 
 
     for p in &pieces[..] {
         println!("{:?}", p);
-        p::draw(&p)
+        piece::draw(&p)
     }
 
     play(board, pieces);
 }
 
-fn play(board: Vec<t::Tile>, pieces: Vec<p::Piece>) -> bool {
+fn play(board: Vec<Tile>, pieces: Vec<Piece>) -> bool {
     let mut games :Vec<&Game> = vec![];
-    let mut game : Game = Game{board : board.clone(), pieces : vec![]};
+    let mut game : Game = Game{board : board.clone(), pieces : vec![], id : 1, complete : false};
     games.push(&game);
     // let's start
     // outer loop starts with each piece
     'pLoop: for p in pieces {
         // rotation loop
         for _r in 0 ..=3 {
-            let rotated = p::rotate(&p);
+            let rotated = piece::rotate(&p);
             // flip loop
             for _d in 0 .. 2 {
-                let flipped = p::flip(&rotated);
+                let flipped = piece::flip(&rotated);
                 for i in 0 .. game.board.len() {
 
                     if game.board[i].used != 0 {
@@ -80,7 +78,7 @@ fn play(board: Vec<t::Tile>, pieces: Vec<p::Piece>) -> bool {
     return false
 }
 
-fn can_place(board : &Vec<t::Tile>, t: &t::Tile, p: &p::Piece) -> bool {
+fn can_place(board : &Vec<Tile>, t: &Tile, p: &Piece) -> bool {
     // in bounds
     for c in &p.shape[..] {
         let mut found = false;
@@ -111,7 +109,7 @@ fn can_place(board : &Vec<t::Tile>, t: &t::Tile, p: &p::Piece) -> bool {
     
 
 
-fn draw(board: &Vec<t::Tile> ) {
+fn draw(board: &Vec<Tile> ) {
     let mut max_x: i8 = 0;
     let mut max_y: i8 = 0;
     for tile in board {
@@ -150,61 +148,54 @@ fn draw(board: &Vec<t::Tile> ) {
 
 }
 
-fn create(board: &mut Vec<t::Tile> ) {
-    board.push(t::Tile {x:0, y:0, used:0, txt:String::from("Jan")});
-    board.push(t::Tile {x:1, y:0, used:-1, txt:String::from("Feb")});
-    board.push(t::Tile {x:2, y:0, used:0, txt:String::from("Mar")});
-    board.push(t::Tile {x:3, y:0, used:0, txt:String::from("Apr")});
-    board.push(t::Tile {x:4, y:0, used:0, txt:String::from("May")});
-    board.push(t::Tile {x:5, y:0, used:0, txt:String::from("Jun")});
+fn create(board: &mut Vec<Tile> ) {
+    board.push(Tile {x:0, y:0, used:0, txt:String::from("Jan")});
+    board.push(Tile {x:1, y:0, used:-1, txt:String::from("Feb")});
+    board.push(Tile {x:2, y:0, used:0, txt:String::from("Mar")});
+    board.push(Tile {x:3, y:0, used:0, txt:String::from("Apr")});
+    board.push(Tile {x:4, y:0, used:0, txt:String::from("May")});
+    board.push(Tile {x:5, y:0, used:0, txt:String::from("Jun")});
 
-    board.push(t::Tile {x:0, y:1, used:0, txt:String::from("Jul")});
-    board.push(t::Tile {x:1, y:1, used:0, txt:String::from("Aug")});
-    board.push(t::Tile {x:2, y:1, used:0, txt:String::from("Sep")});
-    board.push(t::Tile {x:3, y:1, used:0, txt:String::from("Oct")});
-    board.push(t::Tile {x:4, y:1, used:0, txt:String::from("Nov")});
-    board.push(t::Tile {x:5, y:1, used:0, txt:String::from("Dec")});
+    board.push(Tile {x:0, y:1, used:0, txt:String::from("Jul")});
+    board.push(Tile {x:1, y:1, used:0, txt:String::from("Aug")});
+    board.push(Tile {x:2, y:1, used:0, txt:String::from("Sep")});
+    board.push(Tile {x:3, y:1, used:0, txt:String::from("Oct")});
+    board.push(Tile {x:4, y:1, used:0, txt:String::from("Nov")});
+    board.push(Tile {x:5, y:1, used:0, txt:String::from("Dec")});
 
-    board.push(t::Tile {x:0, y:2, used:0, txt:String::from("1")});
-    board.push(t::Tile {x:1, y:2, used:0, txt:String::from("2")});
-    board.push(t::Tile {x:2, y:2, used:0, txt:String::from("3")});
-    board.push(t::Tile {x:3, y:2, used:0, txt:String::from("4")});
-    board.push(t::Tile {x:4, y:2, used:0, txt:String::from("5")});
-    board.push(t::Tile {x:5, y:2, used:-1, txt:String::from("6")});
-    board.push(t::Tile {x:6, y:2, used:0, txt:String::from("7")});
+    board.push(Tile {x:0, y:2, used:0, txt:String::from("1")});
+    board.push(Tile {x:1, y:2, used:0, txt:String::from("2")});
+    board.push(Tile {x:2, y:2, used:0, txt:String::from("3")});
+    board.push(Tile {x:3, y:2, used:0, txt:String::from("4")});
+    board.push(Tile {x:4, y:2, used:0, txt:String::from("5")});
+    board.push(Tile {x:5, y:2, used:-1, txt:String::from("6")});
+    board.push(Tile {x:6, y:2, used:0, txt:String::from("7")});
 
-    board.push(t::Tile {x:0, y:3, used:0, txt:String::from("8")});
-    board.push(t::Tile {x:1, y:3, used:0, txt:String::from("9")});
-    board.push(t::Tile {x:2, y:3, used:0, txt:String::from("10")});
-    board.push(t::Tile {x:3, y:3, used:0, txt:String::from("11")});
-    board.push(t::Tile {x:4, y:3, used:0, txt:String::from("12")});
-    board.push(t::Tile {x:5, y:3, used:0, txt:String::from("13")});
-    board.push(t::Tile {x:6, y:3, used:0, txt:String::from("14")});
+    board.push(Tile {x:0, y:3, used:0, txt:String::from("8")});
+    board.push(Tile {x:1, y:3, used:0, txt:String::from("9")});
+    board.push(Tile {x:2, y:3, used:0, txt:String::from("10")});
+    board.push(Tile {x:3, y:3, used:0, txt:String::from("11")});
+    board.push(Tile {x:4, y:3, used:0, txt:String::from("12")});
+    board.push(Tile {x:5, y:3, used:0, txt:String::from("13")});
+    board.push(Tile {x:6, y:3, used:0, txt:String::from("14")});
 
-    board.push(t::Tile {x:0, y:4, used:0, txt:String::from("15")});
-    board.push(t::Tile {x:1, y:4, used:0, txt:String::from("16")});
-    board.push(t::Tile {x:2, y:4, used:0, txt:String::from("17")});
-    board.push(t::Tile {x:3, y:4, used:0, txt:String::from("18")});
-    board.push(t::Tile {x:4, y:4, used:0, txt:String::from("19")});
-    board.push(t::Tile {x:5, y:4, used:0, txt:String::from("20")});
-    board.push(t::Tile {x:6, y:4, used:0, txt:String::from("21")});
+    board.push(Tile {x:0, y:4, used:0, txt:String::from("15")});
+    board.push(Tile {x:1, y:4, used:0, txt:String::from("16")});
+    board.push(Tile {x:2, y:4, used:0, txt:String::from("17")});
+    board.push(Tile {x:3, y:4, used:0, txt:String::from("18")});
+    board.push(Tile {x:4, y:4, used:0, txt:String::from("19")});
+    board.push(Tile {x:5, y:4, used:0, txt:String::from("20")});
+    board.push(Tile {x:6, y:4, used:0, txt:String::from("21")});
 
-    board.push(t::Tile {x:0, y:5, used:0, txt:String::from("22")});
-    board.push(t::Tile {x:1, y:5, used:0, txt:String::from("23")});
-    board.push(t::Tile {x:2, y:5, used:0, txt:String::from("24")});
-    board.push(t::Tile {x:3, y:5, used:0, txt:String::from("25")});
-    board.push(t::Tile {x:4, y:5, used:0, txt:String::from("26")});
-    board.push(t::Tile {x:5, y:5, used:0, txt:String::from("27")});
-    board.push(t::Tile {x:6, y:5, used:0, txt:String::from("28")});
+    board.push(Tile {x:0, y:5, used:0, txt:String::from("22")});
+    board.push(Tile {x:1, y:5, used:0, txt:String::from("23")});
+    board.push(Tile {x:2, y:5, used:0, txt:String::from("24")});
+    board.push(Tile {x:3, y:5, used:0, txt:String::from("25")});
+    board.push(Tile {x:4, y:5, used:0, txt:String::from("26")});
+    board.push(Tile {x:5, y:5, used:0, txt:String::from("27")});
+    board.push(Tile {x:6, y:5, used:0, txt:String::from("28")});
 
-    board.push(t::Tile {x:0, y:6, used:0, txt:String::from("29")});
-    board.push(t::Tile {x:1, y:6, used:0, txt:String::from("30")});
-    board.push(t::Tile {x:2, y:6, used:0, txt:String::from("31")});
-}
-
-
-
-struct Game {
-    board : Vec<t::Tile>,
-    pieces : Vec<p::Piece>
+    board.push(Tile {x:0, y:6, used:0, txt:String::from("29")});
+    board.push(Tile {x:1, y:6, used:0, txt:String::from("30")});
+    board.push(Tile {x:2, y:6, used:0, txt:String::from("31")});
 }

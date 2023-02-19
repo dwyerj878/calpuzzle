@@ -1,16 +1,10 @@
 
-#[path="piece.rs"]
-mod p;
-
-#[path="tile.rs"]
-mod t;
-
+use crate::tile::Tile;
+use crate::piece::Piece;
 
 pub struct Game {
     pub id : i8,
-    pub available_pieces : Vec<p::Piece>,
-    pub board : Vec<t::Tile>,
+    pub pieces : Vec<Piece>,
+    pub board : Vec<Tile>,
     pub complete : bool
 }
-
-
