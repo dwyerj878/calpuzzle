@@ -1,22 +1,25 @@
 use std::vec;
-use colored::Colorize;
 
 mod piece;
 mod game;
 mod tile;
+mod board;
 
 use crate::tile::Tile;
 use crate::game::Game;
 use crate::piece::Piece;
+use crate::board::Board;
 
 fn main() {
     
-    let mut board : Vec<Tile> = Vec::new();
+    
     let mut pieces : Vec<Piece> = Vec::new();
- 
-    create(&mut board);
-    draw(&board);
+    
+    let mut b = Board::new();
+    b.init();
+    b.draw();
 
+    
     pieces.push(Piece {id : 0, shape : vec![[0,0], [0,1], [0,2], [0,3], [1,1] ], orientation : 0, direction : 1 }); 
     pieces.push(Piece {id : 1, shape : vec![[0,0], [0,1], [1,0], [2,0], [2,1] ], orientation : 0, direction : 1 });     
     pieces.push(Piece {id : 2, shape : vec![[0,0], [0,1], [1,1], [2,1], [2,2] ], orientation : 0, direction : 1 }); 
@@ -31,10 +34,10 @@ fn main() {
         piece::draw(&p)
     }
 
-    play(board, pieces);
+    play(b, pieces);
 }
 
-fn play(board: Vec<Tile>, pieces: Vec<Piece>) -> bool {
+fn play(board: Board, pieces: Vec<Piece>) -> bool {
     let mut games :Vec<&Game> = vec![];
     let mut game : Game = Game{board : board.clone(), pieces : vec![], id : 1, complete : false};
     games.push(&game);
@@ -49,27 +52,27 @@ fn play(board: Vec<Tile>, pieces: Vec<Piece>) -> bool {
                 let flipped = piece::flip(&rotated);
                 for i in 0 .. game.board.len() {
 
-                    if game.board[i].used != 0 {
+                    if game.board.spaces[i].used != 0 {
                         continue;
                     }
-                    if ! can_place(&game.board, &game.board[i], &flipped) {
+                    if ! can_place(&game.board.spaces, &game.board.spaces[i], &flipped) {
                         continue
                     }
 
                     // place
-                    println!("placing {} @ {},{}", flipped.id, game.board[i].x, game.board[i].y );
+                    println!("placing {} @ {},{}", flipped.id, game.board.spaces[i].x, game.board.spaces[i].y );
                     for c in &flipped.shape[..] {
                         //println!("shape {} @ {},{}", flipped.id, c[0], c[1] );
                         for ii in 0 .. game.board.len() {          
                             //println!("checking {} @ {},{}", flipped.id, game.board[ii].x, game.board[ii].y ); 
                             //println!("against  {} @ {},{}", flipped.id, game.board[i].x + c[0], game.board[i].y+c[1] );                 
-                            if game.board[ii].x == game.board[i].x + c[0] && game.board[ii].y == game.board[i].y + c[1] && game.board[ii].used == 0 {
+                            if game.board.spaces[ii].x == game.board.spaces[i].x + c[0] && game.board.spaces[ii].y == game.board.spaces[i].y + c[1] && game.board.spaces[ii].used == 0 {
                                 //println!("using {} @ {},{}", flipped.id, game.board[ii].x, game.board[ii].y );
-                                game.board[ii].used(p.id);
+                                game.board.spaces[ii].used(p.id);
                             }            
                         }
                     }
-                    draw(&game.board);
+                    game.board.draw();
                     continue 'pLoop;
                 }            
             }
@@ -103,99 +106,4 @@ fn can_place(board : &Vec<Tile>, t: &Tile, p: &Piece) -> bool {
     }
 
     return true;
-}
-
-
-    
-
-
-fn draw(board: &Vec<Tile> ) {
-    let mut max_x: i8 = 0;
-    let mut max_y: i8 = 0;
-    for tile in board {
-        if tile.x > max_x {
-            max_x = tile.x;
-        }
-        if tile.y > max_y {
-            max_y = tile.y;
-        }
-    }
-    println!("board {0} x {1}", max_x + 1, max_y + 1);
-
-    for y in 0 .. max_y + 1 {    
-        for x in 0 .. max_x + 1{
-            let mut matched:bool = false;
-            for tile in board {                
-                if tile.x == x && tile.y == y {
-                    if tile.used == 0 {
-                        print!("|{:^5}", tile.txt.bright_green().on_green());
-                    } else if tile.used == -1 {
-                        print!("|{:^5}", tile.txt.blue().on_red());                    
-                    } else {
-                        let utxt:String = format!("{:^5}", tile.used);
-                        print!("|{:^5}", utxt.red().bold().on_white());
-                    }
-                    matched = true;
-                    break;
-                }                
-            }
-            if !matched {
-                print!("|  -  ");
-            }                
-        }
-        println!("|");
-    }
-
-}
-
-fn create(board: &mut Vec<Tile> ) {
-    board.push(Tile {x:0, y:0, used:0, txt:String::from("Jan")});
-    board.push(Tile {x:1, y:0, used:-1, txt:String::from("Feb")});
-    board.push(Tile {x:2, y:0, used:0, txt:String::from("Mar")});
-    board.push(Tile {x:3, y:0, used:0, txt:String::from("Apr")});
-    board.push(Tile {x:4, y:0, used:0, txt:String::from("May")});
-    board.push(Tile {x:5, y:0, used:0, txt:String::from("Jun")});
-
-    board.push(Tile {x:0, y:1, used:0, txt:String::from("Jul")});
-    board.push(Tile {x:1, y:1, used:0, txt:String::from("Aug")});
-    board.push(Tile {x:2, y:1, used:0, txt:String::from("Sep")});
-    board.push(Tile {x:3, y:1, used:0, txt:String::from("Oct")});
-    board.push(Tile {x:4, y:1, used:0, txt:String::from("Nov")});
-    board.push(Tile {x:5, y:1, used:0, txt:String::from("Dec")});
-
-    board.push(Tile {x:0, y:2, used:0, txt:String::from("1")});
-    board.push(Tile {x:1, y:2, used:0, txt:String::from("2")});
-    board.push(Tile {x:2, y:2, used:0, txt:String::from("3")});
-    board.push(Tile {x:3, y:2, used:0, txt:String::from("4")});
-    board.push(Tile {x:4, y:2, used:0, txt:String::from("5")});
-    board.push(Tile {x:5, y:2, used:-1, txt:String::from("6")});
-    board.push(Tile {x:6, y:2, used:0, txt:String::from("7")});
-
-    board.push(Tile {x:0, y:3, used:0, txt:String::from("8")});
-    board.push(Tile {x:1, y:3, used:0, txt:String::from("9")});
-    board.push(Tile {x:2, y:3, used:0, txt:String::from("10")});
-    board.push(Tile {x:3, y:3, used:0, txt:String::from("11")});
-    board.push(Tile {x:4, y:3, used:0, txt:String::from("12")});
-    board.push(Tile {x:5, y:3, used:0, txt:String::from("13")});
-    board.push(Tile {x:6, y:3, used:0, txt:String::from("14")});
-
-    board.push(Tile {x:0, y:4, used:0, txt:String::from("15")});
-    board.push(Tile {x:1, y:4, used:0, txt:String::from("16")});
-    board.push(Tile {x:2, y:4, used:0, txt:String::from("17")});
-    board.push(Tile {x:3, y:4, used:0, txt:String::from("18")});
-    board.push(Tile {x:4, y:4, used:0, txt:String::from("19")});
-    board.push(Tile {x:5, y:4, used:0, txt:String::from("20")});
-    board.push(Tile {x:6, y:4, used:0, txt:String::from("21")});
-
-    board.push(Tile {x:0, y:5, used:0, txt:String::from("22")});
-    board.push(Tile {x:1, y:5, used:0, txt:String::from("23")});
-    board.push(Tile {x:2, y:5, used:0, txt:String::from("24")});
-    board.push(Tile {x:3, y:5, used:0, txt:String::from("25")});
-    board.push(Tile {x:4, y:5, used:0, txt:String::from("26")});
-    board.push(Tile {x:5, y:5, used:0, txt:String::from("27")});
-    board.push(Tile {x:6, y:5, used:0, txt:String::from("28")});
-
-    board.push(Tile {x:0, y:6, used:0, txt:String::from("29")});
-    board.push(Tile {x:1, y:6, used:0, txt:String::from("30")});
-    board.push(Tile {x:2, y:6, used:0, txt:String::from("31")});
 }
