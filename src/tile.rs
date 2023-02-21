@@ -11,7 +11,7 @@ pub struct Tile {
 impl Tile {
     pub fn used(&mut self, p: i8) {
         println!("Tile.used {}:{} {},{}", self.txt, self.used, self.x, self.y);
-        self.used = p;
+        self.used = p;        
     }
 
 }

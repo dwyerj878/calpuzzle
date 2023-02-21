@@ -17,6 +17,10 @@ fn main() {
     
     let mut b = Board::new();
     b.init();
+    
+    b.reserve(String::from("Feb"));
+    b.reserve(String::from("20"));
+
     b.draw();
 
     

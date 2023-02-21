@@ -1,3 +1,5 @@
+use std::fmt::Error;
+
 use colored::Colorize;
 use crate::tile::Tile;
 
@@ -14,7 +16,7 @@ impl Board {
     }
 
 
-    pub fn init(&mut self) {
+    pub fn init(&mut self) -> &mut Board {
         self.spaces.push(Tile {x:0, y:0, used:0, txt:String::from("Jan")});
         self.spaces.push(Tile {x:1, y:0, used:0, txt:String::from("Feb")});
         self.spaces.push(Tile {x:2, y:0, used:0, txt:String::from("Mar")});
@@ -64,7 +66,7 @@ impl Board {
         self.spaces.push(Tile {x:0, y:6, used:0, txt:String::from("29")});
         self.spaces.push(Tile {x:1, y:6, used:0, txt:String::from("30")});
         self.spaces.push(Tile {x:2, y:6, used:0, txt:String::from("31")});
-
+        return self;
     }
 
     pub fn draw(&mut self) {
@@ -110,5 +112,44 @@ impl Board {
         return self.spaces.len()
     }
 
+    pub fn reserve(&mut self,  txt : String)  {
+        for p in 0..self.spaces.len() {
+            let mut tile = self.spaces[p].clone();
+            if tile.txt.eq_ignore_ascii_case(&txt) {                
+                tile.used(-1);
+                self.spaces[p] = tile;
+                break;
+            } 
+        }
+    }
+
 }
 
+
+#[test]
+fn test_reserve() {
+    let mut b = Board::new();
+    b.spaces.push(Tile {x:0, y:0, used:0, txt:String::from("Jan")});
+    b.spaces.push(Tile {x:1, y:0, used:0, txt:String::from("Feb")});
+
+    b.reserve(String::from("Feb"));
+
+    assert!(b.spaces[0].txt == String::from("Jan"));
+    assert!(b.spaces[0].used == 0);
+    
+    assert!(b.spaces[1].txt == String::from("Feb"));
+    assert!(b.spaces[1].used == -1);
+    
+    
+}
+
+#[test]
+fn test_len() {
+    let mut b = Board::new();
+    b.spaces.push(Tile {x:0, y:0, used:0, txt:String::from("Jan")});
+    b.spaces.push(Tile {x:1, y:0, used:0, txt:String::from("Feb")});
+
+    assert!(b.len() == 2);
+    
+    
+}
