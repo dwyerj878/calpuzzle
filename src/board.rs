@@ -9,13 +9,20 @@ pub struct Board {
 }
 
 impl Board {
+
+    /**
+     * Create empty board
+     */
     pub fn new() -> Board {
         Board {
             spaces : Vec::new()
         }
     }
 
-
+    /**
+     * initialize standard board
+     * 
+     */
     pub fn init(&mut self) -> &mut Board {
         self.spaces.push(Tile {x:0, y:0, used:0, txt:String::from("Jan")});
         self.spaces.push(Tile {x:1, y:0, used:0, txt:String::from("Feb")});
@@ -69,6 +76,10 @@ impl Board {
         return self;
     }
 
+
+    /**
+     * draw to stdout
+     */
     pub fn draw(&mut self) {
         let mut max_x: i8 = 0;
         let mut max_y: i8 = 0;
@@ -108,10 +119,15 @@ impl Board {
     
     }
 
+    /**
+     * return number of squares on the board
+     */
     pub fn len(&mut self) -> usize {
         return self.spaces.len()
     }
-
+    /**
+     * reserve tile with matching text (set used to -1)
+     */
     pub fn reserve(&mut self,  txt : String)  {
         for p in 0..self.spaces.len() {
             let mut tile = self.spaces[p].clone();
