@@ -1,5 +1,3 @@
-use std::fmt::Error;
-
 use colored::Colorize;
 use crate::tile::Tile;
 
