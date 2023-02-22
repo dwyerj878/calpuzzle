@@ -26,7 +26,7 @@ fn main() {
 
     for p in &pieces[..] {
         println!("{:?}", p);
-        piece::draw(&p)
+        p.draw()
     }
 
     play(b, pieces);
@@ -54,10 +54,10 @@ fn play(board: Board, pieces: Vec<Piece>) -> bool {
     'pLoop: for p in pieces {
         // rotation loop
         for _r in 0 ..=3 {
-            let rotated = piece::rotate(&p);
+            let rotated = p.rotate();
             // flip loop
             for _d in 0 .. 2 {
-                let flipped = piece::flip(&rotated);
+                let flipped = rotated.flip();
                 for i in 0 .. game.board.len() {
 
                     if game.board.spaces[i].used != 0 {

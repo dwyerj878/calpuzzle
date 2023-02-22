@@ -1,3 +1,6 @@
+/**
+ * Tile is a space on a board that can be empty, reserved or consumed with a Piece
+ */
 #[derive(Debug, Clone)]
 pub struct Tile { 
     pub x : i8,
@@ -13,7 +16,7 @@ impl Tile {
      * used 
      *  0 - unused
      * -1 - reserved
-     * >0 - tile id
+     * >0 - id of piece occupying this tile
      */
     pub fn used(&mut self, p: i8) {
         println!("Tile.used {}:{} {},{}", self.txt, self.used, self.x, self.y);
