@@ -12,29 +12,37 @@ use crate::board::Board;
 
 fn main() {
     
-    
-    let mut pieces : Vec<Piece> = Vec::new();
-    
+    // Create the board
     let mut b = Board::new();
     b.init();
+    
+    b.reserve(String::from("Feb"));
+    b.reserve(String::from("20"));
+
     b.draw();
 
-    
-    pieces.push(Piece {id : 0, shape : vec![[0,0], [0,1], [0,2], [0,3], [1,1] ], orientation : 0, direction : 1 }); 
-    pieces.push(Piece {id : 1, shape : vec![[0,0], [0,1], [1,0], [2,0], [2,1] ], orientation : 0, direction : 1 });     
-    pieces.push(Piece {id : 2, shape : vec![[0,0], [0,1], [1,1], [2,1], [2,2] ], orientation : 0, direction : 1 }); 
-    pieces.push(Piece {id : 3, shape : vec![[1,0], [1,1], [1,2], [0,2], [0,3] ], orientation : 0, direction : 1 }); 
-    pieces.push(Piece {id : 4, shape : vec![[1,0], [0,1], [1,1], [2,0], [2,1] ], orientation : 0, direction : 1 }); 
-    pieces.push(Piece {id : 5, shape : vec![[0,2], [1,2], [2,2], [2,1], [2,0] ], orientation : 0, direction : 1 }); 
-    pieces.push(Piece {id : 6, shape : vec![[0,0], [1,0], [0,1], [1,1], [0,2], [1,2] ], orientation : 0, direction : 1 }); 
-    pieces.push(Piece {id : 7, shape : vec![[0,0], [0,1], [0,2], [0,3], [1,3] ], orientation : 0, direction : 1 }); 
+    // create the pieces    
+    let pieces = create_pieces(); 
 
     for p in &pieces[..] {
         println!("{:?}", p);
-        piece::draw(&p)
+        p.draw()
     }
 
     play(b, pieces);
+}
+
+fn create_pieces() -> Vec<Piece> {
+    let mut pieces : Vec<Piece> = Vec::new();
+    pieces.push(Piece {id : 0, shape : vec![[0,0], [0,1], [0,2], [0,3], [1,1] ], orientation : 0, direction : 1 });
+    pieces.push(Piece {id : 1, shape : vec![[0,0], [0,1], [1,0], [2,0], [2,1] ], orientation : 0, direction : 1 });
+    pieces.push(Piece {id : 2, shape : vec![[0,0], [0,1], [1,1], [2,1], [2,2] ], orientation : 0, direction : 1 });
+    pieces.push(Piece {id : 3, shape : vec![[1,0], [1,1], [1,2], [0,2], [0,3] ], orientation : 0, direction : 1 });
+    pieces.push(Piece {id : 4, shape : vec![[1,0], [0,1], [1,1], [2,0], [2,1] ], orientation : 0, direction : 1 });
+    pieces.push(Piece {id : 5, shape : vec![[0,2], [1,2], [2,2], [2,1], [2,0] ], orientation : 0, direction : 1 });
+    pieces.push(Piece {id : 6, shape : vec![[0,0], [1,0], [0,1], [1,1], [0,2], [1,2] ], orientation : 0, direction : 1 });
+    pieces.push(Piece {id : 7, shape : vec![[0,0], [0,1], [0,2], [0,3], [1,3] ], orientation : 0, direction : 1 });
+    return pieces;
 }
 
 fn play(board: Board, pieces: Vec<Piece>) -> bool {
@@ -46,10 +54,10 @@ fn play(board: Board, pieces: Vec<Piece>) -> bool {
     'pLoop: for p in pieces {
         // rotation loop
         for _r in 0 ..=3 {
-            let rotated = piece::rotate(&p);
+            let rotated = p.rotate();
             // flip loop
             for _d in 0 .. 2 {
-                let flipped = piece::flip(&rotated);
+                let flipped = rotated.flip();
                 for i in 0 .. game.board.len() {
 
                     if game.board.spaces[i].used != 0 {

@@ -8,17 +8,18 @@ pub struct Piece {
     pub direction : i8
 }
 
-/*
-rotate function uses a transform vector to rotate the shape by 90 degrees
-*/
-pub fn rotate(piece: &Piece) -> Piece{
-    let mut rotated : Piece = Piece{id: piece.id, shape : Vec::new() , orientation : piece.orientation + 1, direction : piece.direction};
+impl Piece {
+    /**
+    * rotate function uses a transform vector to rotate the shape by 90 degrees
+    */
+    pub fn rotate(&self) -> Piece {
+        let mut rotated : Piece = Piece{id: self.id, shape : Vec::new() , orientation : self.orientation + 1, direction : self.direction};
 
     let source_v: Vec<[i8;2]> = vec![[0,0],[0,1],[0,2],[0,3],[0,4],[1,0],[1,1],[1,2],[1,3],[1,4],[2,0],[2,1],[2,2],[2,3],[2,4],[3,0],[3,1],[3,2],[3,3],[3,4],[4,0],[4,1],[4,2],[4,3],[4,4]];
     let transf_v: Vec<[i8;2]> = vec![[4,0],[3,0],[2,0],[1,0],[0,0],[4,1],[3,1],[2,1],[1,1],[0,1],[4,2],[3,2],[2,2],[1,0],[0,2],[4,3],[3,3],[2,3],[1,0],[0,3],[4,4],[3,4],[2,4],[1,4],[0,4]];
 
     
-    for p in &piece.shape[..] {
+    for p in &self.shape[..] {
         
         for (idx, s) in source_v.iter().enumerate() {            
             if s[0] == p[0] && s[1] == p[1] {
@@ -58,62 +59,70 @@ pub fn rotate(piece: &Piece) -> Piece{
     }
 
     return rotated;
-}
-
-
-pub fn flip(piece: &Piece) -> Piece{
-    let mut flipped : Piece = Piece{id: piece.id, shape : Vec::new() , orientation : piece.orientation, direction : piece.direction * -1} ;
-    let mut max_x = 0;
-    for p in &piece.shape[..] {
-        if p[0] > max_x {
-            max_x = p[0];
-        }
     }
 
-    for p in &piece.shape[..] {
-        flipped.shape.push([p[0]*-1+max_x, p[1]])
-    }
-
-    return flipped;
-}
-
-pub fn draw(piece : &Piece) {
-    let mut max_x = 0;
-    let mut max_y = 0;
-    for p in &piece.shape[..] {
-        if p[0] > max_x {
-            max_x = p[0];
-        }
-        if p[1] > max_y {
-            max_y = p[1];
-        }
-    }
-
-    let mut row: i8 = 0;
-
-    while row <= max_y {
-        let mut line = String::from("             ");
-        let piece_char  = &piece.id.to_string()[..];
-        for p in &piece.shape[..] {
-            if p[1] == row {
-                let upos:u8 = u8::try_from(p[0]).unwrap();
-                let pos:usize = usize::from(upos);
-                
-                line.replace_range(pos..pos+1, piece_char);
+    pub fn flip(&self) -> Piece{
+        let mut flipped : Piece = Piece{id: self.id, shape : Vec::new() , orientation : self.orientation, direction : self.direction * -1} ;
+        let mut max_x = 0;
+        for p in &self.shape[..] {
+            if p[0] > max_x {
+                max_x = p[0];
             }
         }
-        println!("{}", line);
-        row+=1;
-
+    
+        for p in &self.shape[..] {
+            flipped.shape.push([p[0]*-1+max_x, p[1]])
+        }
+    
+        return flipped;
     }
 
 
+    pub fn draw(&self) {
+        let mut max_x = 0;
+        let mut max_y = 0;
+        for p in &self.shape[..] {
+            if p[0] > max_x {
+                max_x = p[0];
+            }
+            if p[1] > max_y {
+                max_y = p[1];
+            }
+        }
+    
+        let mut row: i8 = 0;
+    
+        while row <= max_y {
+            let mut line = String::from("             ");
+            let piece_char  = &self.id.to_string()[..];
+            for p in &self.shape[..] {
+                if p[1] == row {
+                    let upos:u8 = u8::try_from(p[0]).unwrap();
+                    let pos:usize = usize::from(upos);
+                    
+                    line.replace_range(pos..pos+1, piece_char);
+                }
+            }
+            println!("{}", line);
+            row+=1;
+    
+        }
+    
+    
+    }
+
 }
+
+
+
+
+
+
 
 #[test]
 fn test_flip() {
     let p = Piece {id : 0, shape : vec![[0,0], [0,1], [1,1], [1,2] ], orientation : 0, direction : 1 }; 
-    let f = flip(&p);
+    let f = p.flip();
     assert_eq!(p.id, f.id);
     assert_eq!(f.orientation, 0);
     assert_eq!(f.direction, -1);
@@ -128,7 +137,7 @@ fn test_flip() {
 #[test]
 fn test_rotate() {
     let p = Piece {id : 0, shape : vec![[0,0], [0,1], [1,1], [1,2] ], orientation : 0, direction : 1 }; 
-    let r = rotate(&p);
+    let r = p.rotate();
     assert_eq!(p.id, r.id);
     assert_eq!(r.orientation, 1);
     assert_eq!(r.direction, 1);
