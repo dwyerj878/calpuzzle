@@ -91,7 +91,7 @@ impl Board {
         }
         println!("spaces {0} x {1}", max_x + 1, max_y + 1);
     
-        for y in 0 .. max_y + 1 {    
+        for y in 0 .. max_y + 1 {
             for x in 0 .. max_x + 1{
                 let mut matched:bool = false;
                 for tile in &self.spaces {                
@@ -113,8 +113,7 @@ impl Board {
                 }                
             }
             println!("|");
-        }
-    
+        }    
     }
 
     /**
@@ -123,6 +122,7 @@ impl Board {
     pub fn len(&mut self) -> usize {
         return self.spaces.len()
     }
+
     /**
      * reserve tile with matching text (set used to -1)
      */
@@ -136,7 +136,6 @@ impl Board {
             } 
         }
     }
-
 }
 
 
@@ -153,8 +152,6 @@ fn test_reserve() {
     
     assert!(b.spaces[1].txt == String::from("Feb"));
     assert!(b.spaces[1].used == -1);
-    
-    
 }
 
 #[test]
@@ -162,8 +159,5 @@ fn test_len() {
     let mut b = Board::new();
     b.spaces.push(Tile {x:0, y:0, used:0, txt:String::from("Jan")});
     b.spaces.push(Tile {x:1, y:0, used:0, txt:String::from("Feb")});
-
     assert!(b.len() == 2);
-    
-    
 }

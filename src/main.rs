@@ -63,7 +63,7 @@ fn play(board: Board, pieces: Vec<Piece>) -> bool {
                     if game.board.spaces[i].used != 0 {
                         continue;
                     }
-                    if ! can_place(&game.board.spaces, &game.board.spaces[i], &flipped) {
+                    if ! &game.can_place(game.board.spaces[i].x, game.board.spaces[i].y, &flipped) {
                         continue
                     }
 
@@ -89,29 +89,4 @@ fn play(board: Board, pieces: Vec<Piece>) -> bool {
     return false
 }
 
-fn can_place(board : &Vec<Tile>, t: &Tile, p: &Piece) -> bool {
-    // in bounds
-    for c in &p.shape[..] {
-        let mut found = false;
-        for tt in &board[..] {
-            if tt.x == t.x + c[0] && tt.y == t.y + c[1] {
-                found = true;
-                break
-            }                    
-        }
-        if !found {
-            return false;
-        }
-    }
-    
-    // check collision
-    for c in &p.shape[..] {
-        for tt in &board[..] {
-            if tt.x == t.x + c[0] && tt.y == t.y + c[1] && tt.used != 0 {
-                return false
-            }            
-        }
-    }
 
-    return true;
-}
