@@ -1,7 +1,6 @@
 
 use crate::piece::Piece;
 use crate::board::Board;
-use crate::tile::Tile;
 
 
 #[derive(Debug, Clone)]

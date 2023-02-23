@@ -5,7 +5,6 @@ mod game;
 mod tile;
 mod board;
 
-use crate::tile::Tile;
 use crate::game::Game;
 use crate::piece::Piece;
 use crate::board::Board;
