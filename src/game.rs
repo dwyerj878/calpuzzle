@@ -1,7 +1,7 @@
 
 use crate::piece::Piece;
 use crate::board::Board;
-
+use colored::Colorize;
 
 #[derive(Debug, Clone)]
 pub struct Game {
@@ -39,10 +39,9 @@ impl Game {
         return true;
     }
 
-    pub fn draw(&self) {
-        println!("-----------------");
-        println!("Game : {}", self.id);
-        println!("-----------------");
+    pub fn draw(&self) {        
+        let utxt:String = format!("Game : {:>5}", self.id);
+        println!("{}", utxt.white().bold());        
         self.board.draw();
 
     }
