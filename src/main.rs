@@ -79,7 +79,8 @@ fn play(board: Board, pieces: Vec<Piece>) -> bool {
                             }            
                         }
                     }
-                    game.board.draw();
+                    
+                    game.draw();
                     continue 'pLoop;
                 }            
             }

@@ -38,6 +38,14 @@ impl Game {
     
         return true;
     }
+
+    pub fn draw(&self) {
+        println!("-----------------");
+        println!("Game : {}", self.id);
+        println!("-----------------");
+        self.board.draw();
+
+    }
 }
 
 #[test]
