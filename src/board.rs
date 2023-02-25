@@ -88,8 +88,7 @@ impl Board {
             if tile.y > max_y {
                 max_y = tile.y;
             }
-        }
-        println!("spaces {0} x {1}", max_x + 1, max_y + 1);
+        }       
     
         for y in 0 .. max_y + 1 {
             for x in 0 .. max_x + 1{
