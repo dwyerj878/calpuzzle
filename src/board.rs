@@ -78,7 +78,7 @@ impl Board {
     /**
      * draw to stdout
      */
-    pub fn draw(&mut self) {
+    pub fn draw(&self) {
         let mut max_x: i8 = 0;
         let mut max_y: i8 = 0;
         for tile in &self.spaces {
