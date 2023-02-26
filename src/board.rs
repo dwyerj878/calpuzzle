@@ -1,6 +1,11 @@
 use colored::Colorize;
 use crate::tile::Tile;
 
+/**
+ * encapsultes vector of tile representing a game board
+ * 
+ */
+
 #[derive(Debug, Clone)]
 pub struct Board {
     pub spaces : Vec<Tile>
