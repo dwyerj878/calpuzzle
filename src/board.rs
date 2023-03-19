@@ -1,6 +1,11 @@
 use colored::Colorize;
 use crate::tile::Tile;
 
+/**
+ * encapsultes vector of tile representing a game board
+ * 
+ */
+
 #[derive(Debug, Clone)]
 pub struct Board {
     pub spaces : Vec<Tile>
@@ -78,7 +83,7 @@ impl Board {
     /**
      * draw to stdout
      */
-    pub fn draw(&mut self) {
+    pub fn draw(&self) {
         let mut max_x: i8 = 0;
         let mut max_y: i8 = 0;
         for tile in &self.spaces {
@@ -88,10 +93,9 @@ impl Board {
             if tile.y > max_y {
                 max_y = tile.y;
             }
-        }
-        println!("spaces {0} x {1}", max_x + 1, max_y + 1);
+        }       
     
-        for y in 0 .. max_y + 1 {    
+        for y in 0 .. max_y + 1 {
             for x in 0 .. max_x + 1{
                 let mut matched:bool = false;
                 for tile in &self.spaces {                
@@ -113,16 +117,16 @@ impl Board {
                 }                
             }
             println!("|");
-        }
-    
+        }    
     }
 
     /**
      * return number of squares on the board
      */
-    pub fn len(&mut self) -> usize {
+    pub fn len(&self) -> usize {
         return self.spaces.len()
     }
+
     /**
      * reserve tile with matching text (set used to -1)
      */
@@ -136,7 +140,6 @@ impl Board {
             } 
         }
     }
-
 }
 
 
@@ -153,8 +156,6 @@ fn test_reserve() {
     
     assert!(b.spaces[1].txt == String::from("Feb"));
     assert!(b.spaces[1].used == -1);
-    
-    
 }
 
 #[test]
@@ -162,8 +163,5 @@ fn test_len() {
     let mut b = Board::new();
     b.spaces.push(Tile {x:0, y:0, used:0, txt:String::from("Jan")});
     b.spaces.push(Tile {x:1, y:0, used:0, txt:String::from("Feb")});
-
     assert!(b.len() == 2);
-    
-    
 }
