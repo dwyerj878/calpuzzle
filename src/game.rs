@@ -45,6 +45,49 @@ impl Game {
         self.board.draw();
 
     }
+
+    pub fn play(&mut self) {
+          // let's start
+        // outer loop starts with each piece
+        'pLoop: for p in &self.pieces {
+            // rotation loop
+            for _r in 0 ..=3 {
+                let rotated = p.rotate();
+                // flip loop
+                for _d in 0 .. 2 {
+                    let flipped = rotated.flip();
+                    for i in 0 .. self.board.len() {
+                            
+                        let space = &self.board.spaces[i].clone();
+
+                        if space.used != 0 {
+                            continue;
+                        }
+                        if ! self.can_place(space.x, space.y, &flipped) {
+                            continue
+                        }
+
+                        // place
+                        println!("placing {} @ {},{}", flipped.id, self.board.spaces[i].x, self.board.spaces[i].y );
+                        for c in &flipped.shape[..] {
+                            //println!("shape {} @ {},{}", flipped.id, c[0], c[1] );
+                            for ii in 0 .. self.board.len() {          
+                                //println!("checking {} @ {},{}", flipped.id, game.board[ii].x, game.board[ii].y ); 
+                                //println!("against  {} @ {},{}", flipped.id, game.board[i].x + c[0], game.board[i].y+c[1] );                 
+                                if self.board.spaces[ii].x == self.board.spaces[i].x + c[0] && self.board.spaces[ii].y == self.board.spaces[i].y + c[1] && self.board.spaces[ii].used == 0 {
+                                    //println!("using {} @ {},{}", flipped.id, game.board[ii].x, game.board[ii].y );
+                                    self.board.spaces[ii].used(p.id);
+                                }            
+                            }
+                        }
+                        
+                        self.draw();
+                        continue 'pLoop;
+                    }            
+                }
+            }
+        }
+    }
 }
 
 #[test]

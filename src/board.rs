@@ -123,7 +123,7 @@ impl Board {
     /**
      * return number of squares on the board
      */
-    pub fn len(&mut self) -> usize {
+    pub fn len(&self) -> usize {
         return self.spaces.len()
     }
 
