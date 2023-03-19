@@ -43,13 +43,22 @@ impl Game {
         let utxt:String = format!("Game : {:>5}", self.id);
         println!("{}", utxt.white().bold());        
         self.board.draw();
-
     }
 
-    pub fn play(&mut self) {
+    pub fn piece(&self, idx : usize) -> Piece {
+         Piece { id: self.pieces[idx].id, 
+            shape: self.pieces[idx].shape.clone(), 
+            orientation: self.pieces[idx].orientation, 
+            direction: self.pieces[idx].direction }
+    }
+
+    pub fn play(&mut self, mut games :Vec<&Game> ) {
           // let's start
         // outer loop starts with each piece
-        'pLoop: for p in &self.pieces {
+        'pLoop: 
+        for p_idx in 0..self.pieces.len() {
+        // for p in &self.pieces {
+            let p = &self.pieces[p_idx];
             // rotation loop
             for _r in 0 ..=3 {
                 let rotated = p.rotate();
@@ -68,23 +77,28 @@ impl Game {
                         }
 
                         // place
-                        println!("placing {} @ {},{}", flipped.id, self.board.spaces[i].x, self.board.spaces[i].y );
-                        for c in &flipped.shape[..] {
-                            //println!("shape {} @ {},{}", flipped.id, c[0], c[1] );
-                            for ii in 0 .. self.board.len() {          
-                                //println!("checking {} @ {},{}", flipped.id, game.board[ii].x, game.board[ii].y ); 
-                                //println!("against  {} @ {},{}", flipped.id, game.board[i].x + c[0], game.board[i].y+c[1] );                 
-                                if self.board.spaces[ii].x == self.board.spaces[i].x + c[0] && self.board.spaces[ii].y == self.board.spaces[i].y + c[1] && self.board.spaces[ii].used == 0 {
-                                    //println!("using {} @ {},{}", flipped.id, game.board[ii].x, game.board[ii].y );
-                                    self.board.spaces[ii].used(p.id);
-                                }            
-                            }
-                        }
+                        self.place(&flipped, i, self.piece(p_idx));
+                    
                         
                         self.draw();
                         continue 'pLoop;
                     }            
                 }
+            }
+        }
+    }
+
+    fn place(&mut self, flipped: &Piece, i: usize, p: Piece) {
+        println!("placing {} @ {},{}", flipped.id, self.board.spaces[i].x, self.board.spaces[i].y );
+        for c in &flipped.shape[..] {
+            //println!("shape {} @ {},{}", flipped.id, c[0], c[1] );
+            for ii in 0 .. self.board.len() {          
+                //println!("checking {} @ {},{}", flipped.id, game.board[ii].x, game.board[ii].y ); 
+                //println!("against  {} @ {},{}", flipped.id, game.board[i].x + c[0], game.board[i].y+c[1] );                 
+                if self.board.spaces[ii].x == self.board.spaces[i].x + c[0] && self.board.spaces[ii].y == self.board.spaces[i].y + c[1] && self.board.spaces[ii].used == 0 {
+                    //println!("using {} @ {},{}", flipped.id, game.board[ii].x, game.board[ii].y );
+                    self.board.spaces[ii].used(p.id);
+                }            
             }
         }
     }

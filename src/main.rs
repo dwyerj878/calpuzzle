@@ -47,9 +47,8 @@ fn create_pieces() -> Vec<Piece> {
 fn play(board: Board, pieces: Vec<Piece>) -> bool {
     let mut games :Vec<&Game> = vec![];
     let mut game : Game = Game{board : board.clone(), pieces : pieces, id : 1, complete : false};
-    games.push(&game);
-    game.play();
-    game.draw();
+    game.play(games);
+    game.draw(); 
 
     return false
 }
