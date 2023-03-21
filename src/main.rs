@@ -13,7 +13,6 @@ fn main() {
     
     // Create the board
     let mut b = Board::new();
-    b.init();
     
     b.reserve(String::from("Mar"));
     b.reserve(String::from("20"));
