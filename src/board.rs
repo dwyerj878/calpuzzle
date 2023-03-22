@@ -124,11 +124,9 @@ impl Board {
      * reserve tile with matching text (set used to -1)
      */
     pub fn reserve(&mut self,  txt : String)  {
-        for p in 0..self.spaces.len() {
-            let mut tile = self.spaces[p].clone();
-            if tile.txt.eq_ignore_ascii_case(&txt) {                
-                tile.used(-1);
-                self.spaces[p] = tile;
+        for p in 0..self.spaces.len() {            
+            if self.spaces[p].txt.eq_ignore_ascii_case(&txt) {                
+                self.spaces[p].used(-1);
                 break;
             } 
         }
