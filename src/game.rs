@@ -49,10 +49,11 @@ impl Game {
          Piece { id: self.pieces[idx].id, 
             shape: self.pieces[idx].shape.clone(), 
             orientation: self.pieces[idx].orientation, 
-            direction: self.pieces[idx].direction }
+            direction: self.pieces[idx].direction,  
+            shape_size: self.pieces[idx].shape_size}
     }
 
-    pub fn play(&mut self, mut games :Vec<&Game> ) {
+    pub fn play(&mut self, games :Vec<&Game> ) {
           // let's start
         // outer loop starts with each piece
         'pLoop: 
@@ -81,6 +82,8 @@ impl Game {
                     
                         
                         self.draw();
+                        // self.pieces.remove(index);
+                        // TODO = Remove from available pieces
                         continue 'pLoop;
                     }            
                 }
@@ -106,17 +109,17 @@ impl Game {
 
 #[test]
 fn test_placement_inside_boundary () {
-    let mut b = Board::new();
+    let b = Board::new();
     
-    let bx = b.init();
+
     
     let mut pieces : Vec<Piece> = Vec::new();
-    pieces.push(Piece {id : 0, shape : vec![[0,0], [0,1], [0,2], [0,3], [1,1] ], orientation : 0, direction : 1 });
-    pieces.push(Piece {id : 1, shape : vec![[0,0], [0,1], [1,0], [2,0], [2,1] ], orientation : 0, direction : 1 });
+    pieces.push(Piece {id : 0, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1 , shape_size : 5});
+    pieces.push(Piece {id : 1, shape : [[0,0], [0,1], [1,0], [2,0], [2,1] , [2,2]], orientation : 0, direction : 1 , shape_size : 5});
     
     
-    let g: Game = Game{board : bx.clone(), complete: false, id : 1, pieces : pieces.clone()};
-    let bb = bx.clone();
+    let g: Game = Game{board : b.clone(), complete: false, id : 1, pieces : pieces.clone()};
+    let bb = b.clone();
 
     let pp = pieces.clone();
     let first = g.can_place(bb.spaces[1].x, bb.spaces[1].y  , &pp[0]);    
@@ -125,17 +128,15 @@ fn test_placement_inside_boundary () {
 
 #[test]
 fn test_placement_outside_boundary () {
-    let mut b = Board::new();
-    
-    let bx = b.init();
+    let b = Board::new();
     
     let mut pieces : Vec<Piece> = Vec::new();
-    pieces.push(Piece {id : 0, shape : vec![[0,0], [0,1], [0,2], [0,3], [1,1] ], orientation : 0, direction : 1 });
-    pieces.push(Piece {id : 1, shape : vec![[0,0], [0,1], [1,0], [2,0], [2,1] ], orientation : 0, direction : 1 });
+    pieces.push(Piece {id : 0, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 });
+    pieces.push(Piece {id : 1, shape : [[0,0], [0,1], [1,0], [2,0], [2,1] , [2,2]], orientation : 0, direction : 1 , shape_size : 5 });
     
     
-    let g: Game = Game{board : bx.clone(), complete: false, id : 1, pieces : pieces.clone()};
-    let bb = bx.clone();
+    let g: Game = Game{board : b.clone(), complete: false, id : 1, pieces : pieces.clone()};
+    let bb = b.clone();
 
     let pp = pieces.clone();
 
