@@ -1,5 +1,13 @@
 use std::{usize};
 
+/**
+ * Transform arrays
+ * a coordinate found in SOURCE_V will be translated to the corresponding coordinate in TRANSF_V
+ */
+static SOURCE_V: [[i8;2]; 25] = [[0,0],[0,1],[0,2],[0,3],[0,4],[1,0],[1,1],[1,2],[1,3],[1,4],[2,0],[2,1],[2,2],[2,3],[2,4],[3,0],[3,1],[3,2],[3,3],[3,4],[4,0],[4,1],[4,2],[4,3],[4,4]];
+static TRANSF_V: [[i8;2]; 25] = [[4,0],[3,0],[2,0],[1,0],[0,0],[4,1],[3,1],[2,1],[1,1],[0,1],[4,2],[3,2],[2,2],[1,0],[0,2],[4,3],[3,3],[2,3],[1,0],[0,3],[4,4],[3,4],[2,4],[1,4],[0,4]];
+
+
 #[derive(Debug, Clone)]
 pub struct Piece {
     pub id : i8,    
@@ -31,13 +39,10 @@ impl Piece {
         println!("stage 0 {:?}", self);
         let mut rotated : Piece = Piece{id: self.id, orientation : self.orientation + 1, direction : self.direction, shape_size : self.shape_size, .. Default::default()};
 
-        let source_v: [[i8;2]; 25] = [[0,0],[0,1],[0,2],[0,3],[0,4],[1,0],[1,1],[1,2],[1,3],[1,4],[2,0],[2,1],[2,2],[2,3],[2,4],[3,0],[3,1],[3,2],[3,3],[3,4],[4,0],[4,1],[4,2],[4,3],[4,4]];
-        let transf_v: [[i8;2]; 25] = [[4,0],[3,0],[2,0],[1,0],[0,0],[4,1],[3,1],[2,1],[1,1],[0,1],[4,2],[3,2],[2,2],[1,0],[0,2],[4,3],[3,3],[2,3],[1,0],[0,3],[4,4],[3,4],[2,4],[1,4],[0,4]];
-
         for idx in 0 .. self.shape_size {
-            for sv_idx in 0 .. source_v.len() {
-                if source_v[sv_idx][0] == self.shape[idx][0] && source_v[sv_idx][1] == self.shape[idx][1] {
-                    rotated.shape[idx] = [transf_v[sv_idx][0], transf_v[sv_idx][1]];
+            for sv_idx in 0 .. SOURCE_V.len() {
+                if SOURCE_V[sv_idx][0] == self.shape[idx][0] && SOURCE_V[sv_idx][1] == self.shape[idx][1] {
+                    rotated.shape[idx] = [TRANSF_V[sv_idx][0], TRANSF_V[sv_idx][1]];
                     break;
                 }
             }
@@ -171,5 +176,26 @@ fn test_rotate() {
     assert!(r.shape.contains(&[2,0]));
     assert!(r.shape.contains(&[0,1]));
     assert!(r.shape.contains(&[1,1]));
+}
 
+#[test]
+/**
+ * test that max offset stos at shape_size when checking for values
+ */
+fn test_max_offset() {
+    let p = Piece {id : 0, shape : [[0,0], [0,1], [1,1], [3,2], [5,6], [9,10] ], orientation : 0, direction : 1 , shape_size : 4}; 
+    let (x,y) = p.max_offset();
+    assert!(x == 3);
+    assert!(y == 2);    
+}
+
+#[test]
+/**
+ * test that max offset stos at shape_size when checking for values
+ */
+fn test_min_offset() {
+    let p = Piece {id : 0, shape : [[4,3], [1,2], [2,3], [3,4], [0,0], [0,0] ], orientation : 0, direction : 1 , shape_size : 4}; 
+    let (x,y) = p.min_offset();
+    assert!(x == 1);
+    assert!(y == 2);    
 }
