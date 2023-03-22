@@ -151,5 +151,6 @@ fn test_reserve() {
 
 #[test]
 fn test_len() {
-    let mut b = 43;
+    let b = Board::new();
+    assert!(b.len() == 43);
 }
