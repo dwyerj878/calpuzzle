@@ -12,6 +12,9 @@ pub struct Game {
 }
 
 impl Game {
+    /**
+     * test if we can place a Piece at a particular location
+     */
     pub fn can_place(&self, x: i8, y: i8, p: &Piece) -> bool {
         // in bounds
         for c in &p.shape[..] {

@@ -8,7 +8,7 @@ static SOURCE_V: [[i8;2]; 25] = [[0,0],[0,1],[0,2],[0,3],[0,4],[1,0],[1,1],[1,2]
 static TRANSF_V: [[i8;2]; 25] = [[4,0],[3,0],[2,0],[1,0],[0,0],[4,1],[3,1],[2,1],[1,1],[0,1],[4,2],[3,2],[2,2],[1,0],[0,2],[4,3],[3,3],[2,3],[1,0],[0,3],[4,4],[3,4],[2,4],[1,4],[0,4]];
 
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct Piece {
     pub id : i8,    
     pub orientation : i8,
@@ -36,7 +36,6 @@ impl Piece {
     * rotate function uses a transform vector to rotate the shape by 90 degrees
     */
     pub fn rotate(&self) -> Piece {
-        println!("stage 0 {:?}", self);
         let mut rotated : Piece = Piece{id: self.id, orientation : self.orientation + 1, direction : self.direction, shape_size : self.shape_size, .. Default::default()};
 
         for idx in 0 .. self.shape_size {
@@ -59,7 +58,6 @@ impl Piece {
             }
             
         }
-        println!("stage 2 {:?}", rotated);
         return rotated;
     }
 
