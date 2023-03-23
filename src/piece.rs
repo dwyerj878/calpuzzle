@@ -10,11 +10,11 @@ static TRANSF_V: [[i8;2]; 25] = [[4,0],[3,0],[2,0],[1,0],[0,0],[4,1],[3,1],[2,1]
 
 #[derive(Debug, Clone, Copy)]
 pub struct Piece {
-    pub id : i8,    
-    pub orientation : i8,
-    pub direction : i8,
-    pub shape_size : usize,
-    pub shape : [[i8;2]; 6]    
+    pub id : i8, // identifier
+    pub orientation : i8, // 0-3 as it is rotated
+    pub direction : i8, // 0-1 has it been flipped
+    pub shape_size : usize, // number of blocks in the shape
+    pub shape : [[i8;2]; 6] // array of coordinates for each block in the shape
 }
 
 
@@ -51,12 +51,10 @@ impl Piece {
         let (min_x, min_y) = rotated.min_offset();
 
         // relocate to source [0,0]
-        if min_x > 0 || min_y > 0 {
-            
+        if min_x > 0 || min_y > 0 {            
             for idx in 0 .. rotated.shape_size {
                 rotated.shape[idx] = [rotated.shape[idx][0] - min_x, rotated.shape[idx][1] - min_y];
-            }
-            
+            }            
         }
         return rotated;
     }

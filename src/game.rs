@@ -3,12 +3,12 @@ use crate::piece::Piece;
 use crate::board::Board;
 use colored::Colorize;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Game {
-    pub id : i8,
-    pub pieces : Vec<Piece>,
+    pub id : i8,    
     pub board : Board,
-    pub complete : bool
+    pub complete : bool,
+    pub pieces : [Piece; 8]
 }
 
 impl Game {
@@ -116,12 +116,18 @@ fn test_placement_inside_boundary () {
     
 
     
-    let mut pieces : Vec<Piece> = Vec::new();
-    pieces.push(Piece {id : 0, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1 , shape_size : 5});
-    pieces.push(Piece {id : 1, shape : [[0,0], [0,1], [1,0], [2,0], [2,1] , [2,2]], orientation : 0, direction : 1 , shape_size : 5});
+    let mut pieces = [
+    Piece {id : 0, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1 , shape_size : 5},
+    Piece {id : 1, shape : [[0,0], [0,1], [1,0], [2,0], [2,1] , [2,2]], orientation : 0, direction : 1 , shape_size : 5},
+    Piece {id : 2, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
+    Piece {id : 3, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
+    Piece {id : 4, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
+    Piece {id : 5, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
+    Piece {id : 6, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
+    Piece {id : 7, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 }];
     
     
-    let g: Game = Game{board : b.clone(), complete: false, id : 1, pieces : pieces.clone()};
+    let g: Game = Game{board : b.clone(), complete: false, id : 1, pieces : pieces};
     let bb = b.clone();
 
     let pp = pieces.clone();
@@ -133,9 +139,16 @@ fn test_placement_inside_boundary () {
 fn test_placement_outside_boundary () {
     let b = Board::new();
     
-    let mut pieces : Vec<Piece> = Vec::new();
-    pieces.push(Piece {id : 0, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 });
-    pieces.push(Piece {id : 1, shape : [[0,0], [0,1], [1,0], [2,0], [2,1] , [2,2]], orientation : 0, direction : 1 , shape_size : 5 });
+    let mut pieces = [
+    Piece {id : 0, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
+    Piece {id : 1, shape : [[0,0], [0,1], [1,0], [2,0], [2,1] , [2,2]], orientation : 0, direction : 1 , shape_size : 5 },
+    Piece {id : 2, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
+    Piece {id : 3, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
+    Piece {id : 4, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
+    Piece {id : 5, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
+    Piece {id : 6, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
+    Piece {id : 7, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 }
+    ];
     
     
     let g: Game = Game{board : b.clone(), complete: false, id : 1, pieces : pieces.clone()};
