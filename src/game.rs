@@ -15,7 +15,9 @@ impl Game {
     /**
      * test if we can place a Piece at a particular location
      */
-    pub fn can_place(&self, x: i8, y: i8, p: &Piece) -> bool {
+    pub fn can_place(&self, i: usize, p: &Piece) -> bool {
+        let x = self.board.spaces[i].x;
+        let y = self.board.spaces[i].y;
         // in bounds
         for c in &p.shape[..] {
             let mut found = false;
@@ -63,12 +65,12 @@ impl Game {
                     let flipped = rotated.flip();
                     for i in 0 .. self.board.len() {
                             
-                        let space = &self.board.spaces[i].clone();
+                        let space = &self.board.spaces[i];
 
                         if space.used != 0 {
                             continue;
                         }
-                        if ! self.can_place(space.x, space.y, &flipped) {
+                        if ! self.can_place(i, &flipped) {
                             continue
                         }
 
@@ -117,7 +119,7 @@ fn test_placement_inside_boundary () {
     
     let g: Game = Game{board : b.clone(), complete: false, id : 1, pieces : pieces};
 
-    let can_place = g.can_place(1, 0  , &pieces[0]);    
+    let can_place = g.can_place(1, &pieces[0]);    
     assert!(can_place );
 }
 
@@ -140,7 +142,7 @@ fn test_placement_outside_boundary () {
     
     let g: Game = Game{board : b.clone(), complete: false, id : 1, pieces : pieces.clone()};
 
-    let can_place = g.can_place(5, 0  , &pieces[1]);
+    let can_place = g.can_place(5, &pieces[1]);
 
     assert!(!can_place);
 }
@@ -166,7 +168,7 @@ fn test_placement_overlapping () {
 
 
     g.place(&pieces[1], 1);
-    let can_place = g.can_place(1, 0  , &pieces[1]);
+    let can_place = g.can_place(1,&pieces[1]);
 
     assert!(!can_place);
 }
