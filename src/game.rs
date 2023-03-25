@@ -19,10 +19,10 @@ impl Game {
         let x = self.board.spaces[i].x;
         let y = self.board.spaces[i].y;
         // in bounds
-        for c in &p.shape[..] {
+        for c_idx in 0 .. p.shape_size {        
             let mut found = false;
             for idx in 0 .. self.board.spaces.len() {            
-                if self.board.spaces[idx].x == x + c[0] && self.board.spaces[idx].y == y + c[1] {
+                if self.board.spaces[idx].x == x + &p.shape[c_idx][0] && self.board.spaces[idx].y == y + &p.shape[c_idx][1] {
                     found = true;
                     break;
                 }                    
@@ -33,14 +33,13 @@ impl Game {
         }
         
         // check collision
-        for c in &p.shape[..] {
+        for c_idx in 0 .. p.shape_size { 
             for idx in 0 .. self.board.spaces.len() {
-                if self.board.spaces[idx].x == x + c[0] && self.board.spaces[idx].y == y + c[1] && self.board.spaces[idx].used != 0 {
+                if self.board.spaces[idx].x == x + &p.shape[c_idx][0] && self.board.spaces[idx].y == y + &p.shape[c_idx][1] && self.board.spaces[idx].used != 0 {
                     return false
                 }            
             }
         }
-    
         return true;
     }
 
