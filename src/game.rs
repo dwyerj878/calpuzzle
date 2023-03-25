@@ -48,16 +48,8 @@ impl Game {
         self.board.draw();
     }
 
-    pub fn piece(&self, idx : usize) -> Piece {
-         Piece { id: self.pieces[idx].id, 
-            shape: self.pieces[idx].shape.clone(), 
-            orientation: self.pieces[idx].orientation, 
-            direction: self.pieces[idx].direction,  
-            shape_size: self.pieces[idx].shape_size}
-    }
-
     pub fn play(&mut self, games :Vec<&Game> ) {
-          // let's start
+        // let's start
         // outer loop starts with each piece
         'pLoop: 
         for p_idx in 0..self.pieces.len() {
@@ -81,7 +73,7 @@ impl Game {
                         }
 
                         // place
-                        self.place(&flipped, i, self.piece(p_idx));
+                        self.place(&flipped, i);
                     
                         
                         self.draw();
@@ -94,16 +86,12 @@ impl Game {
         }
     }
 
-    fn place(&mut self, flipped: &Piece, i: usize, p: Piece) {
+    fn place(&mut self, flipped: &Piece, i: usize) {
         println!("placing {} @ {},{}", flipped.id, self.board.spaces[i].x, self.board.spaces[i].y );
         for c in &flipped.shape[..] {
-            //println!("shape {} @ {},{}", flipped.id, c[0], c[1] );
             for ii in 0 .. self.board.len() {          
-                //println!("checking {} @ {},{}", flipped.id, game.board[ii].x, game.board[ii].y ); 
-                //println!("against  {} @ {},{}", flipped.id, game.board[i].x + c[0], game.board[i].y+c[1] );                 
                 if self.board.spaces[ii].x == self.board.spaces[i].x + c[0] && self.board.spaces[ii].y == self.board.spaces[i].y + c[1] && self.board.spaces[ii].used == 0 {
-                    //println!("using {} @ {},{}", flipped.id, game.board[ii].x, game.board[ii].y );
-                    self.board.spaces[ii].used(p.id);
+                    self.board.spaces[ii].used(flipped.id);
                 }            
             }
         }
@@ -111,12 +99,13 @@ impl Game {
 }
 
 #[test]
+/**
+ * ensure that when we try and place a piece that does not fit on the board we fail
+ */
 fn test_placement_inside_boundary () {
     let b = Board::new();
     
-
-    
-    let mut pieces = [
+    let pieces = [
     Piece {id : 0, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1 , shape_size : 5},
     Piece {id : 1, shape : [[0,0], [0,1], [1,0], [2,0], [2,1] , [2,2]], orientation : 0, direction : 1 , shape_size : 5},
     Piece {id : 2, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
@@ -126,20 +115,20 @@ fn test_placement_inside_boundary () {
     Piece {id : 6, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
     Piece {id : 7, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 }];
     
-    
     let g: Game = Game{board : b.clone(), complete: false, id : 1, pieces : pieces};
-    let bb = b.clone();
 
-    let pp = pieces.clone();
-    let first = g.can_place(bb.spaces[1].x, bb.spaces[1].y  , &pp[0]);    
-    assert!(first );
+    let can_place = g.can_place(1, 0  , &pieces[0]);    
+    assert!(can_place );
 }
 
 #[test]
+/**
+ * ensure that when we try and place a piece that fitson the board we succeed
+ */
 fn test_placement_outside_boundary () {
     let b = Board::new();
     
-    let mut pieces = [
+    let pieces = [
     Piece {id : 0, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
     Piece {id : 1, shape : [[0,0], [0,1], [1,0], [2,0], [2,1] , [2,2]], orientation : 0, direction : 1 , shape_size : 5 },
     Piece {id : 2, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
@@ -147,18 +136,37 @@ fn test_placement_outside_boundary () {
     Piece {id : 4, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
     Piece {id : 5, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
     Piece {id : 6, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
-    Piece {id : 7, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 }
-    ];
-    
+    Piece {id : 7, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 }];
     
     let g: Game = Game{board : b.clone(), complete: false, id : 1, pieces : pieces.clone()};
-    let bb = b.clone();
 
-    let pp = pieces.clone();
+    let can_place = g.can_place(5, 0  , &pieces[1]);
 
-    let first = g.can_place(bb.spaces[5].x, bb.spaces[5].y  , &pp[1]);
-
-    assert!(!first);
+    assert!(!can_place);
 }
 
+#[test]
+/**
+ * ensure that when we try and place a piece that fitson the board we succeed
+ */
+fn test_placement_overlapping () {
+    let b = Board::new();
+    
+    let pieces = [
+    Piece {id : 0, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
+    Piece {id : 1, shape : [[0,0], [0,1], [1,0], [2,0], [2,1] , [2,2]], orientation : 0, direction : 1 , shape_size : 5 },
+    Piece {id : 2, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
+    Piece {id : 3, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
+    Piece {id : 4, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
+    Piece {id : 5, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
+    Piece {id : 6, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 },
+    Piece {id : 7, shape : [[0,0], [0,1], [0,2], [0,3], [1,1], [1,1] ], orientation : 0, direction : 1, shape_size : 5 }];
+    
+    let mut g: Game = Game{board : b.clone(), complete: false, id : 1, pieces : pieces.clone()};
 
+
+    g.place(&pieces[1], 1);
+    let can_place = g.can_place(1, 0  , &pieces[1]);
+
+    assert!(!can_place);
+}

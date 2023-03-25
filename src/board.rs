@@ -2,7 +2,7 @@ use colored::Colorize;
 use crate::tile::Tile;
 
 /**
- * encapsultes vector of tile representing a game board
+ * encapsultes array of [Tile] representing a game board
  * 
  */
 
