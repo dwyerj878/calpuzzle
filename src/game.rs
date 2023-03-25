@@ -21,10 +21,10 @@ impl Game {
         // in bounds
         for c in &p.shape[..] {
             let mut found = false;
-            for tt in self.board.spaces.clone() {
-                if tt.x == x + c[0] && tt.y == y + c[1] {
+            for idx in 0 .. self.board.spaces.len() {            
+                if self.board.spaces[idx].x == x + c[0] && self.board.spaces[idx].y == y + c[1] {
                     found = true;
-                    break
+                    break;
                 }                    
             }
             if !found {
@@ -34,8 +34,8 @@ impl Game {
         
         // check collision
         for c in &p.shape[..] {
-            for tt in self.board.spaces.clone() {
-                if tt.x == x + c[0] && tt.y == y + c[1] && tt.used != 0 {
+            for idx in 0 .. self.board.spaces.len() {
+                if self.board.spaces[idx].x == x + c[0] && self.board.spaces[idx].y == y + c[1] && self.board.spaces[idx].used != 0 {
                     return false
                 }            
             }
