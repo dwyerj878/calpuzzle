@@ -5,7 +5,7 @@ use colored::Colorize;
 
 #[derive(Debug)]
 pub struct Game {
-    pub id : i8,    
+    pub id : u32,    
     pub board : Board,
     pub complete : bool,
     pub pieces : [Piece; 8]
@@ -49,7 +49,23 @@ impl Game {
         self.board.draw();
     }
 
-    pub fn play(&mut self, games :Vec<&Game> ) {
+    pub fn is_complete(&self) -> bool {
+        for p_idx in 0 .. self.pieces.len() {
+            let mut p_found : bool = false;
+            for t_idx in 0 .. self.board.len() {
+                if self.board.spaces[t_idx].used as i8 == p_idx as i8 {
+                    p_found = true;
+                    break;
+                }
+            }
+            if !p_found {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    pub fn play(&mut self) {
         // let's start
         // outer loop starts with each piece
         'pLoop: 
@@ -77,7 +93,7 @@ impl Game {
                         self.place(&flipped, i);
                     
                         
-                        self.draw();
+                        //self.draw();
                         // self.pieces.remove(index);
                         // TODO = Remove from available pieces
                         continue 'pLoop;
@@ -85,10 +101,11 @@ impl Game {
                 }
             }
         }
+        self.complete = self.is_complete();
     }
 
     fn place(&mut self, flipped: &Piece, i: usize) {
-        println!("placing {} @ {},{}", flipped.id, self.board.spaces[i].x, self.board.spaces[i].y );
+        //println!("placing {} @ {},{}", flipped.id, self.board.spaces[i].x, self.board.spaces[i].y );
         for c in &flipped.shape[..] {
             for ii in 0 .. self.board.len() {          
                 if self.board.spaces[ii].x == self.board.spaces[i].x + c[0] && self.board.spaces[ii].y == self.board.spaces[i].y + c[1] && self.board.spaces[ii].used == 0 {

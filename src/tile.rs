@@ -19,7 +19,7 @@ impl Tile {
      * >0 - id of piece occupying this tile
      */
     pub fn used(&mut self, p: i8) {
-        println!("Tile.used {}:{} {},{}", self.txt, self.used, self.x, self.y);
+        //println!("Tile.used {}:{} {},{}", self.txt, self.used, self.x, self.y);
         self.used = p;        
     }
 
