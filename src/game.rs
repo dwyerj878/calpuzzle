@@ -66,39 +66,19 @@ impl Game {
     }
 
     pub fn play(&mut self) {
-        // let's start
-        // outer loop starts with each piece
-        'pLoop: 
         for p_idx in 0..self.pieces.len() {
-        // for p in &self.pieces {
-            let p = &self.pieces[p_idx];
-            // rotation loop
-            for _r in 0 ..=3 {
-                let rotated = p.rotate();
-                // flip loop
-                for _d in 0 .. 2 {
-                    let flipped = rotated.flip();
-                    for i in 0 .. self.board.len() {
-                            
-                        let space = &self.board.spaces[i];
-
-                        if space.used != 0 {
-                            continue;
-                        }
-                        if ! self.can_place(i, &flipped) {
-                            continue
-                        }
-
-                        // place
-                        self.place(&flipped, i);
-                    
-                        
-                        //self.draw();
-                        // self.pieces.remove(index);
-                        // TODO = Remove from available pieces
-                        continue 'pLoop;
-                    }            
+            let p = self.pieces[p_idx];
+            for i in 0 .. self.board.len() {                    
+                let space = &self.board.spaces[i];
+                if space.used != 0 {
+                    continue;
                 }
+                if ! self.can_place(i, &p) {
+                    continue
+                }
+                // place
+                self.place(&p, i);
+                break;
             }
         }
         self.complete = self.is_complete();
